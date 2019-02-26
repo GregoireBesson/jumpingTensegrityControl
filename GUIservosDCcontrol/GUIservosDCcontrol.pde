@@ -59,7 +59,7 @@ void setup(){
   
   //Servo Buttons
   
-  cp5.addButton("close")     
+  cp5.addButton("Close")     
     .setPosition(BUTTON_ZERO_X-100, BUTTON_ZERO_Y)   
     .setSize(80, 80) 
     .setFont(font)
@@ -71,7 +71,7 @@ void setup(){
     .setFont(font)
   ;
   
-  cp5.addButton("open")     
+  cp5.addButton("Open")     
     .setPosition(BUTTON_ZERO_X+100, BUTTON_ZERO_Y)
     .setSize(80, 80) 
     .setFont(font)
@@ -135,7 +135,6 @@ void draw(){
 void stop(){
   port.write('s');
 }
-
 void up(){
   port.write('w');
 }
@@ -151,10 +150,10 @@ void fast(){
 void zero(){
   port.write('0');
 }
-void open(){
+void Open(){
   port.write('o');
 }
-void close(){
+void Close(){
   port.write('l');
 }
 void M1(){
