@@ -8,25 +8,25 @@
 #include <Servo.h>
 
 #define NB_MOTOR      6
-#define BUTTON_PIN    2
-#define SERVO_1       11
-#define SERVO_2       12
-#define SERVO_3       13
-#define SERVO_4       4
-#define SERVO_5       5
-#define SERVO_6       6
-#define DC1_UP        30 
-#define DC1_DOWN      31
-#define DC2_UP        32 
-#define DC2_DOWN      33
-#define DC3_UP        34 
-#define DC3_DOWN      35
-#define DC4_UP        36 
-#define DC4_DOWN      37
-#define DC5_UP        38 
-#define DC5_DOWN      39
-#define DC6_UP        40 
-#define DC6_DOWN      41
+#define BUTTON_PIN    22
+#define SERVO_1       31
+#define SERVO_2       32
+#define SERVO_3       33
+#define SERVO_4       34
+#define SERVO_5       35
+#define SERVO_6       36
+#define DC1_UP        13 
+#define DC1_DOWN      12
+#define DC2_UP        11 
+#define DC2_DOWN      10
+#define DC3_UP        9 
+#define DC3_DOWN      8
+#define DC4_UP        7 
+#define DC4_DOWN      6
+#define DC5_UP        5 
+#define DC5_DOWN      4
+#define DC6_UP        3 
+#define DC6_DOWN      2
 #define DC_SLOW_SPEED 128
 #define DC_MAX_SPEED  255
 
@@ -45,8 +45,8 @@ bool up = false;                        // direction DC motor
 bool DCfast = true;                     // speed DC motor
 bool motorsEnabled[NB_MOTOR+1] = {0, 0, 0, 0, 0, 0, 0};   // to select which motor to control (index 0 is dummy)
 
-const int DC_UpPins[] = {0, 30, 32, 34, 36, 38, 40};
-const int DC_DownPins[] = {0, 31, 33, 35, 37, 39, 41};
+const int DC_UpPins[] = {0, 13, 11, 9, 7, 5, 3};
+const int DC_DownPins[] = {0, 12, 10, 8, 6, 4, 2};
 const int closeAngle = 0;               // when motor at 0deg system is locked
 const int openAngle = 70;               // when motor at that angle system is free
 const int OffsetServo1 = -30;           // used for servo calibration
@@ -100,7 +100,7 @@ void loop() {
     //--------------- SERVO CONTROL ---------------
 
     // read state of the push button value:
-    buttonState = digitalRead(BUTTON_PIN);
+    //buttonState = digitalRead(BUTTON_PIN);
 
     if (servoCalibration == true){
       // keep motors at half range for calibration
@@ -109,7 +109,8 @@ void loop() {
       //delay(100000);
       
     } else {
-      if (buttonState == LOW || serialServoOpen) {
+      //if (buttonState == LOW || serialServoOpen) {
+      if (serialServoOpen) {
         // open the system
         servo1.write(openAngle-OffsetServo1);
         delay(openingDelay);
