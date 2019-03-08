@@ -45,16 +45,16 @@ bool up = false;                        // direction DC motor
 bool DCfast = true;                     // speed DC motor
 bool motorsEnabled[NB_MOTOR+1] = {0, 0, 0, 0, 0, 0, 0};   // to select which motor to control (index 0 is dummy)
 
-const int DC_UpPins[] = {0, 13, 11, 9, 7, 5, 3};
-const int DC_DownPins[] = {0, 12, 10, 8, 6, 4, 2};
+const int DC_UpPins[] = {0, 3, 5, 7, 9, 11, 13};
+const int DC_DownPins[] = {0, 2, 4, 6, 8, 10, 12};
 const int closeAngle = 0;               // when motor at 0deg system is locked
-const int openAngle = 70;               // when motor at that angle system is free
-const int OffsetServo1 = -30;           // used for servo calibration
-const int OffsetServo2 = -43;
-const int OffsetServo3 = -0;     
-const int OffsetServo4 = -0;
-const int OffsetServo5 = -0;     
-const int OffsetServo6 = -0;    
+const int openAngle = 60;               // when motor at that angle system is free
+const int OffsetServo1 = -38;           // used for servo calibration
+const int OffsetServo2 = -50;
+const int OffsetServo3 = -64;     
+const int OffsetServo4 = -75;
+const int OffsetServo5 = -73;     
+const int OffsetServo6 = -50;    
 const int openingDelay = 0;             // in ms
 const float ratioAngle = 2.3;
 
@@ -106,6 +106,10 @@ void loop() {
       // keep motors at half range for calibration
       servo1.write(openAngle/ratioAngle-OffsetServo1);
       servo2.write(openAngle/ratioAngle-OffsetServo2);
+      servo3.write(openAngle/ratioAngle-OffsetServo3);
+      servo4.write(openAngle/ratioAngle-OffsetServo4);
+      servo5.write(openAngle/ratioAngle-OffsetServo5);
+      servo6.write(openAngle/ratioAngle-OffsetServo6);
       //delay(100000);
       
     } else {
@@ -113,12 +117,20 @@ void loop() {
       if (serialServoOpen) {
         // open the system
         servo1.write(openAngle-OffsetServo1);
-        delay(openingDelay);
+        //delay(openingDelay);
         servo2.write(openAngle-OffsetServo2);
+        servo3.write(openAngle-OffsetServo3);
+        servo4.write(openAngle-OffsetServo4);
+        servo5.write(openAngle-OffsetServo5);
+        servo6.write(openAngle-OffsetServo6);
       } else {
         // keep it close
         servo1.write(closeAngle-OffsetServo1);
         servo2.write(closeAngle-OffsetServo2);
+        servo3.write(closeAngle-OffsetServo3);
+        servo4.write(closeAngle-OffsetServo4);
+        servo5.write(closeAngle-OffsetServo5);
+        servo6.write(closeAngle-OffsetServo6);
       }
     }
 
@@ -129,124 +141,124 @@ void loop() {
 void rxData() {
 
   char ch_cmd = Serial.read();
-  Serial.println(ch_cmd);
+  //Serial.println(ch_cmd);
   
   switch (ch_cmd){
     case 'w':
       // DC goes up
       up = true;
       down = false;
-      while (Serial.available())
-        Serial.read();
-      Serial.println(F("DC UP"));
+      //while (Serial.available())
+        //Serial.read();
+      //Serial.println(F("DC UP"));
       break;
     case 'x':
       // DC goes down
       down = true;
       up = false;
-      while (Serial.available())
-        Serial.read();
-      Serial.println(F("DC DOWN"));
+      //while (Serial.available())
+        //Serial.read();
+      //Serial.println(F("DC DOWN"));
       break;
     case 's':
       // DC stops
       down = false;
       up = false;
-      while (Serial.available())
-        Serial.read();
-      Serial.println(F("DC STOP"));
+      //while (Serial.available())
+        //Serial.read();
+      //Serial.println(F("DC STOP"));
       break;
     case 'a':
       // DC slow speed 
       DCfast = false;
-      Serial.println(F("DC SLOW"));
+      //Serial.println(F("DC SLOW"));
       break;
     case 'd':
       // DC full speed !
       DCfast = true;
-      Serial.println(F("DC FULL SPEED"));
+      //Serial.println(F("DC FULL SPEED"));
       break;
     case 'o':
       // Open all servos !
       servoCalibration = false;
       serialServoOpen = true;
-      Serial.println(F("SERVO OPEN"));
+      //Serial.println(F("SERVO OPEN"));
       break;
     case 'l':
       // Close all servos
       servoCalibration = false;
       serialServoOpen = false;
-      Serial.println(F("SERVO CLOSE"));
+      //Serial.println(F("SERVO CLOSE"));
       break;
     case '0':
       // Put all servos in zero position
       servoCalibration = true;
-      Serial.println(F("SERVO CALIBRATION"));
+      //Serial.println(F("SERVO CALIBRATION"));
       break;
     case '1':
       // Toggle motor 1
       if (motorsEnabled[1]){
         motorsEnabled[1] = false;
-        Serial.println(F("M1 DISABLED"));
+        //Serial.println(F("M1 DISABLED"));
       }
       else {
         motorsEnabled[1] = true;
-        Serial.println(F("M1 ENABLED"));
+        //Serial.println(F("M1 ENABLED"));
       }
       break;
     case '2':
       // Toggle motor 2
       if (motorsEnabled[2]){
         motorsEnabled[2] = false;
-        Serial.println(F("M2 DISABLED"));
+        //Serial.println(F("M2 DISABLED"));
       }
       else {
         motorsEnabled[2] = true;
-        Serial.println(F("M2 ENABLED"));
+        //Serial.println(F("M2 ENABLED"));
       }
       break;
     case '3':
       // Toggle motor 3
       if (motorsEnabled[3]){
         motorsEnabled[3] = false;
-        Serial.println(F("M3 DISABLED"));
+        //Serial.println(F("M3 DISABLED"));
       }
       else {
         motorsEnabled[3] = true;
-        Serial.println(F("M3 ENABLED"));
+        //Serial.println(F("M3 ENABLED"));
       }
       break;
     case '4':
       // Toggle motor 4
       if (motorsEnabled[4]){
         motorsEnabled[4] = false;
-        Serial.println(F("M4 DISABLED"));
+        //Serial.println(F("M4 DISABLED"));
       }
       else {
         motorsEnabled[4] = true;
-        Serial.println(F("M4 ENABLED"));
+        //Serial.println(F("M4 ENABLED"));
       }
       break;
     case '5':
       // Toggle motor 5
       if (motorsEnabled[5]){
         motorsEnabled[5] = false;
-        Serial.println(F("M5 DISABLED"));
+        //Serial.println(F("M5 DISABLED"));
       }
       else {
         motorsEnabled[5] = true;
-        Serial.println(F("M5 ENABLED"));
+        //Serial.println(F("M5 ENABLED"));
       }
       break;
     case '6':
       // Toggle motor 6
       if (motorsEnabled[6]){
         motorsEnabled[6] = false;
-        Serial.println(F("M6 DISABLED"));
+        //Serial.println(F("M6 DISABLED"));
       }
       else {
         motorsEnabled[6] = true;
-        Serial.println(F("M6 ENABLED"));
+        //Serial.println(F("M6 ENABLED"));
       }
       break;
     
@@ -269,7 +281,7 @@ void DCcontrol(){
         if (motorsEnabled[i]){
           digitalWrite(DC_DownPins[i], LOW);
           analogWrite(DC_UpPins[i], DCspeed);
-          delay(10);
+          //delay(10);
         }
         else {
           digitalWrite(DC_DownPins[i], LOW);
@@ -282,7 +294,7 @@ void DCcontrol(){
         if (motorsEnabled[i]){
           digitalWrite(DC_UpPins[i], LOW);
           analogWrite(DC_DownPins[i], DCspeed);
-          delay(10);
+          //delay(10);
         }
         else {
           digitalWrite(DC_DownPins[i], LOW);
