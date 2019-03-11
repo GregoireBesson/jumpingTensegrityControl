@@ -23,7 +23,7 @@ void setup(){
   //buttons:
   
   cp5 = new ControlP5(this);
-  font = createFont("calibri" , 20);
+  font = createFont("calibri" , 18);
   
   //DC Buttons
   
@@ -73,6 +73,12 @@ void setup(){
   
   cp5.addButton("Open")     
     .setPosition(BUTTON_ZERO_X+100, BUTTON_ZERO_Y)
+    .setSize(80, 80) 
+    .setFont(font)
+  ;
+  
+  cp5.addButton("OpenAll")     
+    .setPosition(BUTTON_ZERO_X+100, BUTTON_ZERO_Y+100)
     .setSize(80, 80) 
     .setFont(font)
   ;
@@ -152,6 +158,9 @@ void zero(){
 }
 void Open(){
   port.write('o');
+}
+void OpenAll(){
+  port.write('p');
 }
 void Close(){
   port.write('l');

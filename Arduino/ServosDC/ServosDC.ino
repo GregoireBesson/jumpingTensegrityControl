@@ -40,6 +40,8 @@ Servo servo6;
 
 bool servoCalibration = true;           // keep motor at 0deg for 1sec in first loop (calibration)
 bool serialServoOpen = false;           // open servo via Serial
+bool serialServoAllOpen = false;
+bool serialServoClose = false;
 bool down = false;                      // direction DC motor
 bool up = false;                        // direction DC motor
 bool DCfast = true;                     // speed DC motor
@@ -96,45 +98,9 @@ void loop() {
   {
     rxData();
   }
-
-    //--------------- SERVO CONTROL ---------------
-
-    // read state of the push button value:
-    //buttonState = digitalRead(BUTTON_PIN);
-
-    if (servoCalibration == true){
-      // keep motors at half range for calibration
-      servo1.write(openAngle/ratioAngle-OffsetServo1);
-      servo2.write(openAngle/ratioAngle-OffsetServo2);
-      servo3.write(openAngle/ratioAngle-OffsetServo3);
-      servo4.write(openAngle/ratioAngle-OffsetServo4);
-      servo5.write(openAngle/ratioAngle-OffsetServo5);
-      servo6.write(openAngle/ratioAngle-OffsetServo6);
-      //delay(100000);
-      
-    } else {
-      //if (buttonState == LOW || serialServoOpen) {
-      if (serialServoOpen) {
-        // open the system
-        servo1.write(openAngle-OffsetServo1);
-        //delay(openingDelay);
-        servo2.write(openAngle-OffsetServo2);
-        servo3.write(openAngle-OffsetServo3);
-        servo4.write(openAngle-OffsetServo4);
-        servo5.write(openAngle-OffsetServo5);
-        servo6.write(openAngle-OffsetServo6);
-      } else {
-        // keep it close
-        servo1.write(closeAngle-OffsetServo1);
-        servo2.write(closeAngle-OffsetServo2);
-        servo3.write(closeAngle-OffsetServo3);
-        servo4.write(closeAngle-OffsetServo4);
-        servo5.write(closeAngle-OffsetServo5);
-        servo6.write(closeAngle-OffsetServo6);
-      }
-    }
-
-    DCcontrol();
+  servoControl();
+  DCcontrol();
+  
 }
 
 // Read incoming data
@@ -179,21 +145,34 @@ void rxData() {
       //Serial.println(F("DC FULL SPEED"));
       break;
     case 'o':
-      // Open all servos !
+      // Open selected servo !
       servoCalibration = false;
       serialServoOpen = true;
+      serialServoClose = false;
       //Serial.println(F("SERVO OPEN"));
       break;
     case 'l':
       // Close all servos
       servoCalibration = false;
       serialServoOpen = false;
+      serialServoAllOpen = false;
+      serialServoClose = true;
       //Serial.println(F("SERVO CLOSE"));
       break;
     case '0':
       // Put all servos in zero position
       servoCalibration = true;
+      serialServoOpen = false;
+      serialServoAllOpen = false;
+      serialServoClose = false;
       //Serial.println(F("SERVO CALIBRATION"));
+      break;
+    case 'p':
+      // open all servos
+      serialServoAllOpen = true;
+      serialServoClose = false;
+      servoCalibration = false;
+      //Serial.println(F("ALL SERVO OPEN"));
       break;
     case '1':
       // Toggle motor 1
@@ -263,6 +242,74 @@ void rxData() {
       break;
     
   }
+}
+
+void servoControl(){
+   //--------------- SERVO CONTROL ---------------
+
+    // read state of the push button value:
+    //buttonState = digitalRead(BUTTON_PIN);
+
+    if (servoCalibration == true){
+      // keep motors at half range for calibration
+      servo1.write(openAngle/ratioAngle-OffsetServo1);
+      servo2.write(openAngle/ratioAngle-OffsetServo2);
+      servo3.write(openAngle/ratioAngle-OffsetServo3);
+      servo4.write(openAngle/ratioAngle-OffsetServo4);
+      servo5.write(openAngle/ratioAngle-OffsetServo5);
+      servo6.write(openAngle/ratioAngle-OffsetServo6);
+      //delay(100000);
+      
+    } else {
+      //if (buttonState == LOW || serialServoOpen) {
+      if (serialServoAllOpen) {
+        // open all the servos
+        servo1.write(openAngle-OffsetServo1);
+        //delay(openingDelay);
+        servo2.write(openAngle-OffsetServo2);
+        servo3.write(openAngle-OffsetServo3);
+        servo4.write(openAngle-OffsetServo4);
+        servo5.write(openAngle-OffsetServo5);
+        servo6.write(openAngle-OffsetServo6);
+      } 
+      else if (serialServoOpen) {
+          if (motorsEnabled[1])
+            servo1.write(openAngle-OffsetServo1);
+          if (motorsEnabled[2])
+            servo2.write(openAngle-OffsetServo2);
+          if (motorsEnabled[3])
+            servo3.write(openAngle-OffsetServo3);
+          if (motorsEnabled[4])
+            servo4.write(openAngle-OffsetServo4);
+          if (motorsEnabled[5])
+            servo5.write(openAngle-OffsetServo5);
+          if (motorsEnabled[6])
+            servo6.write(openAngle-OffsetServo6);
+      }
+      else if (serialServoClose) {
+          if (motorsEnabled[1])
+            servo1.write(closeAngle-OffsetServo1);
+          if (motorsEnabled[2])
+            servo2.write(closeAngle-OffsetServo2);
+          if (motorsEnabled[3])
+            servo3.write(closeAngle-OffsetServo3);
+          if (motorsEnabled[4])
+            servo4.write(closeAngle-OffsetServo4);
+          if (motorsEnabled[5])
+            servo5.write(closeAngle-OffsetServo5);
+          if (motorsEnabled[6])
+            servo6.write(closeAngle-OffsetServo6);
+      }
+      else {
+        // keep it close
+        servo1.write(closeAngle-OffsetServo1);
+        servo2.write(closeAngle-OffsetServo2);
+        servo3.write(closeAngle-OffsetServo3);
+        servo4.write(closeAngle-OffsetServo4);
+        servo5.write(closeAngle-OffsetServo5);
+        servo6.write(closeAngle-OffsetServo6);
+      }
+    }
 }
 
 //--------------- DC MOTOR CONTROL ---------------//
